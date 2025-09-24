@@ -101,6 +101,7 @@ class HFLM(TemplateLM):
         # end token for thinking, either the string or int token id.
         # splits to get response after this token (if provided).
         think_end_token: str | int | None = None,
+        think_start_token: str | int | None = None,
         enable_thinking: bool | None = None,
         chat_template_args: dict[str, Any] | None = None,
         **kwargs,
@@ -246,6 +247,13 @@ class HFLM(TemplateLM):
             if (isinstance(think_end_token, str) and think_end_token.isdigit())
             else think_end_token
         )
+
+        self.think_start_token = (
+            int(think_start_token)
+            if (isinstance(think_start_token, str) and think_start_token.isdigit())
+            else think_start_token
+        )
+
         self.truncation = truncation
         self.logits_cache = logits_cache
         self.vocab_size = self.tokenizer.vocab_size
@@ -1468,7 +1476,7 @@ class HFLM(TemplateLM):
                 stop=until,
                 **kwargs,
             )
-
+            
             cont_toks_list = cont.tolist()
             for cont_toks, context in zip(cont_toks_list, contexts):
                 # discard context + left-padding toks if using causal decoder-only LM
@@ -1492,16 +1500,22 @@ class HFLM(TemplateLM):
                     s = s.lstrip()
 
                 # Apply post-processing: remove stop sequences and string-based thinking tokens
-                s = postprocess_generated_text(
+                s, cot_trace= postprocess_generated_text(
                     generation=s,
                     stop=until,
                     think_end_token=self.think_end_token
                     if isinstance(self.think_end_token, str)
                     else None,
+                    think_start_token=self.think_start_token
+                    if isinstance(self.think_start_token, str)
+                    else None,
                 )
-                res.append(s)
+                
+                s_list = [s, cot_trace]
 
-                self.cache_hook.add_partial("generate_until", (context, gen_kwargs), s)
+                res.append(s_list)
+
+                self.cache_hook.add_partial("generate_until", (context, gen_kwargs), s_list)
                 pbar.update(1)
         # reorder this group of results back to original unsorted form
         res = re_ords.get_original(res)

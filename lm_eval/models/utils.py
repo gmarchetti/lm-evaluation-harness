@@ -855,8 +855,7 @@ def truncate_tokens(
 
 
 def postprocess_generated_text(
-    generation: str, stop: Union[list[str], str, None], think_end_token: Optional[str]
-) -> str:
+    generation: str, stop: Union[list[str], str, None], think_end_token: Optional[str], think_start_token: Optional[str]) -> str:
     """
     Post-processes the generated text by stripping stop sequences and optional thinking markers.
 
@@ -878,6 +877,10 @@ def postprocess_generated_text(
                 # for seq2seq case where self.tok_decode(self.eot_token_id) = ''
                 generation = generation.split(term)[0]
     if think_end_token:
+        if think_start_token:
+            generation = generation.split(think_start_token)[-1].lstrip()
+
+        cot_trace = generation.split(think_end_token)[0].lstrip()
         generation = generation.split(think_end_token)[-1].lstrip()
 
-    return generation
+    return generation, cot_trace

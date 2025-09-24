@@ -43,7 +43,8 @@ class FilterEnsemble:
     filters: List[Callable[[], Filter]]
 
     def apply(self, instances: List[Instance]) -> None:
-        resps, docs = zip(*((inst.resps, inst.doc) for inst in instances))
+        
+        resps, docs = zip(*((inst.resps[0][0], inst.doc) for inst in instances))
         resps, docs = list(resps), list(docs)
 
         for f in self.filters:
