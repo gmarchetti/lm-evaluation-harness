@@ -865,6 +865,8 @@ def postprocess_generated_text(
             at the first occurrence of any stop sequence.
         think_end_token (Optional[str]): Token marking end of thinking section. If provided,
             returns only the text after this token (discarding thinking content).
+        think_start_token (Optional[str]): Token marking the start of thinking section. If provided,
+            returns only the text after this token.
 
     Returns:
         str: The processed generation - text before stop sequences and after thinking sections.
