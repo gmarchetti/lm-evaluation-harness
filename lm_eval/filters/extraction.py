@@ -36,7 +36,7 @@ class RegexFilter(Filter):
         # so we process each of these (same input/target response sets)
         # independently (and keep them a list.)
         def filter_set(inst):
-            filtered = []
+            filtered = [] 
             for resp in inst:
                 match = self.regex.findall(resp)
                 if match:
@@ -52,8 +52,11 @@ class RegexFilter(Filter):
                     match = self.fallback
                 filtered.append(match)
             return filtered
-
-        filtered_resps = list(map(lambda x: filter_set(x), resps))
+        filtered_resps = [self.fallback]
+        if isinstance(resps[0], str):
+            filtered_resps = filter_set(resps)
+        else:
+            filtered_resps = list(map(lambda x: filter_set(x), resps))
         return filtered_resps
 
 
