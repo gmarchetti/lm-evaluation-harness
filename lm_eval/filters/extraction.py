@@ -54,7 +54,7 @@ class RegexFilter(Filter):
             return filtered
         filtered_resps = [self.fallback]
         if isinstance(resps[0], str):
-            filtered_resps = filter_set(resps)
+            filtered_resps = [filter_set(resps)]
         else:
             filtered_resps = list(map(lambda x: filter_set(x), resps))
         return filtered_resps
