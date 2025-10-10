@@ -1,0 +1,12 @@
+Bootstrap: docker
+From: python:3.12.3
+Stage: build
+%environment
+   export LC_ALL=C
+%files
+    requirements.txt /
+%post
+  pip install --upgrade pip
+  pip install -r requirements.txt
+%test
+  python -V
