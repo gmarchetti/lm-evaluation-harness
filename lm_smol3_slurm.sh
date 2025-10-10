@@ -8,18 +8,14 @@
 #SBATCH --gpus=1
 #SBATCH --account=f202500007hpcvlabuportog ##should end in G
 
-source /projects/F202500007HPCVLABUPORTO/gmarchetti/venv-x86/bin/activate
-
-ml Python/3.12.3-GCCcore-13.3.0
-
-python /projects/F202500007HPCVLABUPORTO/gmarchetti/lm-evaluation/lm_eval/__main__.py \
+singularity run /projects/F202500007HPCVLABUPORTO/gmarchetti/lm-harness.sif lm_eval \
 --model hf \
 --model_args pretrained=HuggingFaceTB/SmolLM3-3B,enable_thinking=True,think_end_token="</think>",think_start_token="<think>" \
 --tasks mmlu_pro,gpqa_diamond_cot_zeroshot \
 --device cuda:0 \
 --log_samples \
 --batch_size=1 \
---output_path results/smol3b \
+--output_path /projects/F202500007HPCVLABUPORTO/gmarchetti/results/smol3b \
 --gen_kwargs temperature=0.6,top_p=0.95,top_k=20,do_sample=True,max_length=4000 \
 --limit=20 \
 --apply_chat_template

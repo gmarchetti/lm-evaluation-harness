@@ -91,7 +91,6 @@ langchain-core==0.3.71
 langchain-text-splitters==0.3.8
 langsmith==0.4.8
 libclang==18.1.1
--e git+ssh://git@github.com/gmarchetti/lm-evaluation-harness.git@3efb7649b839fb635576ba66ca3b27426813ebce#egg=lm_eval
 lxml==6.0.1
 Markdown==3.9
 markdown-it-py==4.0.0

@@ -5,8 +5,10 @@ Stage: build
    export LC_ALL=C
 %files
     requirements.txt /
+    . /lm-eval
 %post
   pip install --upgrade pip
   pip install -r requirements.txt
+  pip install -e /lm-eval
 %test
   python -V
